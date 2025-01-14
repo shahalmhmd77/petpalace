@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Pets</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .add-pet-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #28a745;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .add-pet-btn:hover {
+            background-color: #218838;
+        }
+
+        .pet-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .pet-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            padding: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .pet-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .pet-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .pet-details {
+            margin-top: 15px;
+        }
+
+        .pet-details h3 {
+            font-size: 20px;
+            margin: 0;
+            color: #333;
+        }
+
+        .pet-details p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .pet-type {
+            font-size: 14px;
+            background-color: #007bff;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .contact-btn {
+            margin-top: 15px;
+            display: block;
+            text-align: center;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .contact-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <a href="{% url 'register_pet' %}" class="add-pet-btn">Add Pet</a>
+    <h1>My Pets</h1>
+    <div class="pet-list">
+        {% for pet in pets %}
+        <div class="pet-card">
+            <img src="{% static 'img/team-2.jpg' %}" alt="Pet Image">
+            <div class="pet-details">
+                <h3>{{ pet.name }}</h3>
+                <p><strong>Owner:</strong> {{ pet.owner_name }}</p>
+                <p><strong>Contact:</strong> {{ pet.contact }}</p>
+                <span class="pet-type">{{ pet.pet_type|title }}</span>
+            </div>
+            <a href="tel:{{ pet.contact }}" class="contact-btn">Contact Owner</a>
+        </div>
+        {% empty %}
+        <p style="text-align: center; font-size: 18px; color: #666;">No pets registered yet.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>
