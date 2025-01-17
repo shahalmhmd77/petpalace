@@ -64,3 +64,34 @@ class Product(models.Model):
 
     def __str__(self):
         return 'products'
+
+
+
+
+class PetTrainingData(models.Model):
+    # Pet Information
+    pet_name = models.CharField(max_length=50)
+    pet_age = models.PositiveIntegerField(default=0)
+    pet_breed = models.CharField(max_length=150,null=True,blank=True)
+
+    # Trainer Information
+    trainer_name = models.CharField(max_length=100,null=True,blank=True)
+
+    session_date = models.DateField()
+    session_duration = models.DurationField(help_text="Duration of the session (hh:mm:ss)")
+    training_type = models.CharField(max_length=100, help_text="e.g., Obedience, Agility, Behavioral")
+
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Pet Training Data"
+        verbose_name_plural = "Pet Training Data"
+        ordering = ['-session_date']
+
+    def __str__(self):
+        return f"Training Data for {self.pet_name} by {self.trainer_name} on {self.session_date}"
+
+
+
+

@@ -57,10 +57,13 @@
         <a href="#">Profile</a>
         <a href="#">Dashboard</a>
         <a href="#">Notifications</a>
-        <a href="">My Shop</a>
-        <a href="/shop-owner/manage-pets">Manage Pets</a>
+        <a href="{% url 'shop' %}">My Shop</a>
+        <a href="{% url 'manage_pets' %}">Manage Pets</a>
         <a href="/shop-owner/orders">Orders</a>
         <a href="/shop-owner/reports">Reports</a>
+        <a href="{% url 'grooming' %}">Manage Grooming</a>
+        <a href="/shop-owner/manage-boarding">Manage Boarding</a>
+        <a href="{% url 'training' %}">Manage Training</a>
         <a href="#">Logout</a>
     </div>
 
@@ -102,15 +105,6 @@
                         <div class="card-body">
                             <p>View detailed reports of your shop activity.</p>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card mb-4">
-                        <div class="card-header">PRODUCTS</div>
-                        <div class="card-body">
-                            <p>View detailed reports of your shop activity.</p>
-                        </div>
-                        <div class="btn"><a href="{% url 'add_shop' %}">Go to</a></div>
                     </div>
                 </div>
             </div>

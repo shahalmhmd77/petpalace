@@ -3,7 +3,7 @@ from django.contrib.auth import login
 from django.contrib import messages
 from .models import Pet, Shop, Trainer, Customer
 from django.contrib.auth.models import User
-from .models import Shop
+from .models import Shop,PetTrainingData
 from django.contrib.auth import logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate
@@ -52,43 +52,28 @@ def pet_dashboard(request):
 def index(request):
     return render(request, 'petpalaceapp/index.html') 
 
-def add_shop(request):
-    products = Product.objects.all()
-    return render(request, 'petpalaceapp/add_shop.html', {'products': products}) 
+def shop(request):
+    return render(request, 'petpalaceapp/shop.html') 
+
+
+def trainer_dashboard(request):
+    return render(request, 'petpalaceapp/trainer_dashboard.html') 
+
+def grooming(request):
+    return render(request, 'petpalaceapp/grooming.html') 
+
+def boarding(request):
+    return render(request, 'petpalaceapp/boarding.html') 
+
+def training(request):
+    training=PetTrainingData.objects.all()
+    return render(request, 'petpalaceapp/training.html',{'training_data':training}) 
+
+def manage_pets(request):
+    return render(request, 'petpalaceapp/manage_pets.html') 
 
 
 
-def add_product(request):
-        if request.method == 'POST':
-            name = request.POST.get('name')
-            description = request.POST.get('description')
-            price = request.POST.get('price')
-            image = request.FILES.get('image')
-            category = request.POST.get('category')
-
-            # Save the new product to the database
-            try:
-                product = Product.objects.create(
-                    name=name,
-                    description=description,
-                    price=price,
-                    image=image,
-                    category=category
-                )
-            except Exception as e:  # Handle any errors
-                messages.error(request, f'An error occurred: {e}')
-                return render(request, 'petpalaceapp/add_product.html')
-
-
-            # Redirect to a success page or the main list
-            messages.success(request, 'Product added successfully!')
-            return redirect('add_shop')  # Replace 'product_list' with your desired view name
-
-        return render(request, 'petpalaceapp/add_product.html')
-
-def product_list(request):
-    products = Product.objects.all()
-    return render(request, 'petpalaceapp/product_list.html', {'products': products})
 
 def register(request):
     if request.method == 'POST':
@@ -185,8 +170,47 @@ def home(request):
     return render(request, 'index.html')
 
 
-def delete_product(request,product_id):
-    product = Product.objects.get(id=product_id)
-    product.delete()
-    messages.success(request, 'Product deleted successfully!')
-    return redirect('add_shop') 
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import PetTrainingData
+from .forms import PetTrainingDataForm
+
+def training_list(request):
+    """Displays a list of all pet training sessions."""
+    trainings = PetTrainingData.objects.all().order_by('-session_date')
+    return render(request, 'training_list.html', {'trainings': trainings})
+
+
+def training_add(request):
+    if request.method == 'POST':
+
+        form = PetTrainingDataForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('training')
+    else:
+        form = PetTrainingDataForm()
+    return redirect('training')
+    
+
+def training_edit(request):
+    training = get_object_or_404(PetTrainingData, pk=request.POST.get('training_id'))
+    if request.method == 'POST':
+        form = PetTrainingDataForm(request.POST, instance=training)
+        if form.is_valid():
+            form.save()
+            return redirect('training')
+    else:
+        return redirect('training')
+
+def training_delete(request, pk):
+    """Handles deleting a training session."""
+    training = get_object_or_404(PetTrainingData, pk=pk)
+    training.delete()
+    return redirect('training')
+
+
+ 
+
+
+
+
