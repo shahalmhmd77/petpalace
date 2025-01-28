@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Boarding List</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pet Boarding Bookings</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Customer Name</th>
+                <th>Service</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Drop-off Time</th>
+                <th>Payment Method</th>
+                <th>Feedback</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.customer_name }}</td>
+                <td>{{ booking.get_service_display }}</td>
+                <td>{{ booking.start_date }}</td>
+                <td>{{ booking.end_date }}</td>
+                <td>{{ booking.drop_off_time }}</td>
+                <td>{{ booking.payment_method }}</td>
+                <td>{{ booking.feedback|default:"No feedback" }}</td>
+                <td>{{ booking.created_at }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

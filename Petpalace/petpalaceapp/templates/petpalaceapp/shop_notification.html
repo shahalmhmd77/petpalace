@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Notifications</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .modal-header, .modal-footer {
+            background-color: #f8f9fa;
+        }
+        .modal-title {
+            color: #007bff;
+        }
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Shop Notifications</h2>
+        <div class="text-right mb-3">
+            <button class="btn btn-custom" data-toggle="modal" data-target="#addNotificationModal">Add Notification</button>
+        </div>
+        <table class="table table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Example notification row -->
+                <tr>
+                    <td>Sample Notification</td>
+                    <td>Auction</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm">Edit</button>
+                        <button class="btn btn-danger btn-sm">Delete</button>
+                    </td>
+                </tr>
+                <!-- Add more notification rows here -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add Notification Modal -->
+    <div class="modal fade" id="addNotificationModal" tabindex="-1" role="dialog" aria-labelledby="addNotificationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addNotificationModalLabel">Add Notification</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="notificationTitle">Title</label>
+                            <input type="text" class="form-control" id="notificationTitle" placeholder="Enter title">
+                        </div>
+                        <div class="form-group">
+                            <label for="notificationCategory">Category</label>
+                            <select class="form-control" id="notificationCategory">
+                                <option value="auction">Auction</option>
+                                <option value="events">Events</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-custom">Save</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

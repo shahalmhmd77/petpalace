@@ -1,0 +1,81 @@
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+}
+
+/* Register container */
+.register-container {
+    width: 100%;
+    max-width: 400px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    color: #333;
+}
+
+/* Form box */
+.form-box {
+    padding: 20px;
+    text-align: center;
+}
+
+.form-box h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Form elements */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+form .btn {
+    width: 100%;
+    background-color: #6a11cb;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin-top: 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form .btn:hover {
+    background-color: #2575fc;
+}
+
+/* Error and success messages */
+.messages {
+    margin-top: 15px;
+}
+
+.messages p {
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+.messages p.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.messages p.success {
+    background-color: #d4edda;
+    color: #155724;
+}
