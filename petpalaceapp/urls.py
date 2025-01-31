@@ -26,7 +26,7 @@ urlpatterns = [
     path('index/', views.index, name='index'),
     path('my-pets/', views.my_pets, name='my_pets'),
     path('shop/', views.shop, name='shop'),
-    path('trainer_dashboard', views.trainer_dashboard, name='trainer_dashboard'),
+    path('trainer_dashboard/', views.trainer_dashboard, name='trainer_dashboard'),
     path('boarding', views.boarding, name='boarding'),
     path('training', views.training, name='training'),
     path('grooming', views.grooming, name='grooming'),
@@ -37,6 +37,14 @@ urlpatterns = [
     path('add_training/', views.training_add, name='add_training'),
     path('edit_training/', views.training_edit, name='edit_training'),
     path('delete_training/<int:pk>/', views.training_delete, name='training_delete'),
+
+    path('update_shop_profile/', views.update_shop_profile, name='update_shop_profile'),
+    path('shop_products/', views.shop_products, name='shop_products'),
+    path('add_product/', views.add_product, name='add_product'),
+    path('update_product/<int:product_id>/', views.update_product, name='update_product'),
+    path('delete_product/<int:product_id>/', views.delete_product, name='delete_product'),
+    path('shop_order_history/', views.shop_order_history, name='shop_order_history'),
+
 
 
 ]

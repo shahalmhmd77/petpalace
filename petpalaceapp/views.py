@@ -9,7 +9,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Product
+from .models import *
 
 
 def about(request):
@@ -210,7 +210,78 @@ def training_delete(request, pk):
 
 
  
+def update_shop_profile(request):
+    shop = get_object_or_404(Shop, user=request.user)
+    if request.method == 'POST':
+        shop_name = request.POST.get('shopName')
+        owner_name = request.POST.get('ownerName')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        address = request.POST.get('address')
+
+        shop.full_name = shop_name
+        shop.owner_name = owner_name
+        shop.user.email = email
+        shop.contact = phone
+        shop.location = address
+        shop.save()
+        shop.user.save()
+
+        messages.success(request, 'Profile updated successfully!')
+        return redirect('shop_dashboard')  # Redirect to the shop dashboard or another appropriate page
+
+    return render(request, 'shop_owner_profile.html',{'shop':shop})  
 
 
+def shop_products(request):
+    products = Product.objects.all()
+    return render(request, 'shop_products.html', {'products': products})
 
 
+def add_product(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        category = request.POST.get('category')
+        quantity = request.POST.get('quantity')
+        description = request.POST.get('description')
+        price = request.POST.get('price')
+        image = request.FILES.get('image')
+
+        product = Product(
+            name=name,
+            category=category,
+            quantity=quantity,
+            description=description,
+            price=price,
+            image=image
+        )
+        product.save()
+        messages.success(request, 'Product added successfully!')
+    return redirect('shop_products') 
+
+
+def update_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        product.name = request.POST.get('name')
+        product.category = request.POST.get('category')
+        product.quantity = request.POST.get('quantity')
+        product.description = request.POST.get('description')
+        product.price = request.POST.get('price')
+        product.image = request.FILES.get('image', product.image)  
+
+        product.save()
+        messages.success(request, 'Product updated successfully!')
+    return redirect('shop_products')
+
+
+def delete_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    product.delete()
+    messages.success(request, 'Product deleted successfully!')
+    return redirect('shop_products')
+
+
+def shop_order_history(request):
+    orders = OrderHistory.objects.filter()
+    return render(request, 'shop_order_history.html', {'orders': orders})

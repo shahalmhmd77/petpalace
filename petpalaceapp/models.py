@@ -66,6 +66,29 @@ class Product(models.Model):
         return 'products'
 
 
+class OrderHistory(models.Model):
+    order_date = models.DateTimeField(auto_now_add=True)
+    user=models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
+    products=models.ForeignKey('productWithQuantity',on_delete=models.CASCADE,null=True,blank=True)
+    quantity=models.IntegerField(default=0)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=20, choices=[
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+    ])
+
+    def __str__(self):
+        return f"Order on {self.order_date.strftime('%Y-%m-%d')} - Status: {self.status}"
+
+
+class productWithQuantity(models.Model):
+    product=models.ForeignKey(Product,on_delete=models.CASCADE,null=True,blank=True)
+    quantity=models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.product.name
+
 
 
 class PetTrainingData(models.Model):
