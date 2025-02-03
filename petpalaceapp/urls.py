@@ -45,6 +45,14 @@ urlpatterns = [
     path('delete_product/<int:product_id>/', views.delete_product, name='delete_product'),
     path('shop_order_history/', views.shop_order_history, name='shop_order_history'),
 
+    path('user_profile/', views.user_profile, name='user_profile'),
+    path('trainer_profile/', views.trainer_profile, name='trainer_profile'),
+    path('logout/', views.logout_view, name='logout'),
+    path('trainer_management/', views.trainer_management, name='trainer_management'),
+    path('add_trainer/', views.add_trainer, name='add_trainer'),
+    path('delete_trainer/<int:trainer_id>/', views.delete_trainer, name='delete_trainer'),
+    path('edit_trainer/<int:trainer_id>/', views.edit_trainer, name='edit_trainer'),
+
 
 
 ]

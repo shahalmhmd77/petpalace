@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trainer Management</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- Custom Styles -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-container {
+            max-width: 1500px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-add-trainer {
+            margin-bottom: 20px;
+        }
+
+        .modal-content {
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Table to Display Trainers -->
+    <div class="table-container">
+        <h2>Trainer List</h2>
+        {% if messages %}
+            <div class="alert alert-info">
+                {% for message in messages %}
+                    {{ message }}<br>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <button type="button" class="btn btn-primary btn-add-trainer" data-bs-toggle="modal" data-bs-target="#addTrainerModal">
+            <i class="fas fa-plus"></i> Add Trainer
+        </button>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Expertise</th>
+                    <th>Experience</th>
+                    <th>Contact</th>
+                    <th>Email</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for trainer in trainers %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ trainer.name }}</td>
+                    <td>{{ trainer.expertise }}</td>
+                    <td>{{ trainer.experience }} Years</td>
+                    <td>{{ trainer.contact }}</td>
+                    <td>{{ trainer.user.email }}</td>
+                    <td>{{ trainer.user.username }}</td>
+                    <td>******</td>
+                    <td>
+                        <!-- Edit Button -->
+                        <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editTrainerModal{{ trainer.id }}">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <!-- Delete Button -->
+                        <a href="{% url 'delete_trainer' trainer.id %}" class="btn btn-sm btn-danger">
+                            <i class="fas fa-trash"></i> Delete
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add Trainer Modal -->
+    <div class="modal fade" id="addTrainerModal" tabindex="-1" aria-labelledby="addTrainerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTrainerModalLabel">Add New Trainer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'add_trainer' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="trainerName" class="form-label">Trainer Name:</label>
+                            <input type="text" id="trainerName" name="name" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="expertise" class="form-label">Expertise:</label>
+                            <input type="text" id="expertise" name="expertise" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="experience" class="form-label">Experience (Years):</label>
+                            <input type="number" id="experience" name="experience" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contact" class="form-label">Contact Number:</label>
+                            <input type="tel" id="contact" name="contact" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email:</label>
+                            <input type="email" id="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username:</label>
+                            <input type="text" id="username" name="username" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password:</label>
+                            <input type="password" id="password" name="password" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="bio" class="form-label">Short Bio:</label>
+                            <textarea id="bio" name="bio" class="form-control" rows="3" required></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Add Trainer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Trainer Modals -->
+    {% for trainer in trainers %}
+    <div class="modal fade" id="editTrainerModal{{ trainer.id }}" tabindex="-1" aria-labelledby="editTrainerModalLabel{{ trainer.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editTrainerModalLabel{{ trainer.id }}">Edit Trainer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'edit_trainer' trainer.id %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="trainerName{{ trainer.id }}" class="form-label">Trainer Name:</label>
+                            <input type="text" id="trainerName{{ trainer.id }}" name="name" class="form-control" value="{{ trainer.name }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="expertise{{ trainer.id }}" class="form-label">Expertise:</label>
+                            <input type="text" id="expertise{{ trainer.id }}" name="expertise" class="form-control" value="{{ trainer.expertise }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="experience{{ trainer.id }}" class="form-label">Experience (Years):</label>
+                            <input type="number" id="experience{{ trainer.id }}" name="experience" class="form-control" value="{{ trainer.experience }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contact{{ trainer.id }}" class="form-label">Contact Number:</label>
+                            <input type="tel" id="contact{{ trainer.id }}" name="contact" class="form-control" value="{{ trainer.contact }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email{{ trainer.id }}" class="form-label">Email:</label>
+                            <input type="email" id="email{{ trainer.id }}" name="email" class="form-control" value="{{ trainer.user.email }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="username{{ trainer.id }}" class="form-label">Username:</label>
+                            <input type="text" id="username{{ trainer.id }}" name="username" class="form-control" value="{{ trainer.user.username }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password{{ trainer.id }}" class="form-label">Change Password:</label>
+                            <input type="password" id="password{{ trainer.id }}" name="password" class="form-control" value="" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="bio{{ trainer.id }}" class="form-label">Short Bio:</label>
+                            <textarea id="bio{{ trainer.id }}" name="bio" class="form-control" rows="3" required>{{ trainer.bio }}</textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -285,3 +285,82 @@ def delete_product(request, product_id):
 def shop_order_history(request):
     orders = OrderHistory.objects.filter()
     return render(request, 'shop_order_history.html', {'orders': orders})
+
+def user_profile(request):
+    user_data=get_object_or_404(Customer,user=request.user)
+    return render(request,'user_profile.html',{'user_data':user_data})
+
+
+def trainer_profile(request):
+    user_data=get_object_or_404(Trainer,user=request.user)
+    return render(request,'trainer_profile.html',{'user_data':user_data})
+
+
+from django.contrib.auth import logout
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
+
+def trainer_management(request):
+    trainers = Trainer.objects.all()
+    return render(request, 'trainer_management.html', {'trainers': trainers})
+
+
+def add_trainer(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        expertise = request.POST.get('expertise')
+        experience = request.POST.get('experience')
+        contact = request.POST.get('contact')
+        email = request.POST.get('email')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        email = request.POST.get('email')
+        bio = request.POST.get('bio')
+        image = request.FILES.get('image')
+        if not username and not email and not password:
+            messages.success(request, 'username ,email, password missing!')
+            return redirect('trainer_management')
+
+        new_trainer = Trainer(
+            name=name,
+            expertise=expertise,
+            experience=experience,
+            contact=contact,
+            user=User.objects.create_user(username=username, email=email, password='defaultpassword'),
+            bio=bio,
+            image=image
+        )
+        new_trainer.save()
+        messages.success(request, 'Trainer added successfully!')
+        return redirect('trainer_management')
+
+    return render(request, 'add_trainer.html') 
+
+
+def delete_trainer(request, trainer_id):
+    trainer = get_object_or_404(Trainer, id=trainer_id)
+    trainer.user.delete()
+    trainer.delete()
+    messages.success(request, 'Trainer deleted successfully!')
+    return redirect('trainer_management')
+
+def edit_trainer(request, trainer_id):
+    trainer = get_object_or_404(Trainer, id=trainer_id)
+    if request.method == 'POST':
+        trainer.name = request.POST.get('name')
+        password = request.POST.get('password')
+        if password and not password == '':
+            trainer.user.set_password(password)
+
+        trainer.user.username = request.POST.get('username')
+        trainer.expertise = request.POST.get('expertise')
+        trainer.experience = request.POST.get('experience')
+        trainer.contact = request.POST.get('contact')
+        trainer.bio = request.POST.get('bio')
+        trainer.image = request.FILES.get('image', trainer.image)
+        trainer.save()
+        messages.success(request, 'Trainer updated successfully!')
+        return redirect('trainer_management')
+    return render(request, 'edit_trainer.html', {'trainer': trainer})
