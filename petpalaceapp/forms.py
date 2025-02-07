@@ -1,13 +1,13 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import Pet, Shop, Trainer, Customer
+from .models import *
 
 
 
 class PetRegistrationForm(forms.ModelForm):
     class Meta:
         model = Pet
-        fields = ['name', 'pet_type', 'owner_name', 'contact']
+        fields = ['name', 'pet_type', 'contact']
         widgets = {
             'pet_type': forms.Select(attrs={'class': 'form-control'}),
             'name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -26,3 +26,9 @@ class PetTrainingDataForm(forms.ModelForm):
             'session_duration': forms.TimeInput(attrs={'type': 'time'}),
         }
 
+
+class PetServiceForm(forms.ModelForm):
+    class Meta:
+        model = Service
+        fields = '__all__'
+     

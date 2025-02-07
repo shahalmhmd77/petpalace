@@ -130,7 +130,7 @@
 <body>
     <!-- Sidebar for Pet Owner -->
     <div class="sidebar">
-        <a href="#" class="active">
+        <a href="{% url 'pet_dashboard' %}" class="active">
             <i class="fas fa-home"></i> Dashboard
         </a>
         <a href="{% url 'user_profile' %}">
@@ -142,12 +142,12 @@
         <a href="{% url 'my_pets' %}">
             <i class="fas fa-paw"></i> My Pets
         </a>
-        <a href="/pet-owner/adopt-pet">
-            <i class="fas fa-heart"></i> Adopt a Pet
+        <a href="{% url 'adoption' %}">
+            <i class="fas fa-heart"></i> Adoption
         </a>
-        <a href="/pet-owner/health-records">
-            <i class="fas fa-file-medical"></i> Health Records
-        </a>
+        <a href="{% url 'service' %}"><i class="fas fa-leaf"></i> Book Service</a>
+
+       
         <a href="/pet-owner/adoption-requests">
             <i class="fas fa-clipboard-list"></i> Adoption Requests
         </a>

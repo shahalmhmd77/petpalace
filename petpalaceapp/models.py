@@ -44,14 +44,9 @@ class Trainer(models.Model):
 
 
 class Pet(models.Model):
-    PET_TYPES = [
-        ('dog', 'Dog'),
-        ('cat', 'Cat'),
-    ]
-
+    owner=models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
     name = models.CharField(max_length=100)
-    pet_type = models.CharField(max_length=10, choices=PET_TYPES)
-    owner_name = models.CharField(max_length=100)
+    pet_type = models.CharField(max_length=10,null=True,blank=True)
     contact = models.CharField(max_length=10)
 
     def __str__(self):
@@ -120,5 +115,32 @@ class PetTrainingData(models.Model):
         return f"Training Data for {self.pet_name} by {self.trainer_name} on {self.session_date}"
 
 
+class PetAdoption(models.Model):
+    pet=models.ForeignKey(Pet,on_delete=models.CASCADE,null=True,blank=True)
+    adoption_date=models.DateField(null=True,blank=True)
+    adopter=models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
+    location=models.CharField(max_length=100,null=True,blank=True)
+    contact=models.CharField(max_length=10,null=True,blank=True)
+
+    def __str__(self):
+        return f"Adoption of {self.pet.name} on {self.adoption_date}"
+    
 
 
+class Service(models.Model):
+    pet = models.ForeignKey(Pet, on_delete=models.CASCADE, null=True, blank=True)
+    trainer = models.ForeignKey(Trainer, on_delete=models.CASCADE, null=True, blank=True)
+    pet_age = models.PositiveIntegerField(default=0)
+    pet_breed = models.CharField(max_length=150, null=True, blank=True)
+    adoption_date = models.DateField(null=True, blank=True)
+    adopter = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    location = models.CharField(max_length=100, null=True, blank=True)
+    contact = models.CharField(max_length=10, null=True, blank=True)
+    service_type = models.CharField(max_length=10, null=True, blank=True)
+    session_date = models.DateField(null=True, blank=True)
+    session_duration = models.DurationField(null=True, blank=True, help_text="Duration of the session (hh:mm:ss)")
+    training_type = models.CharField(max_length=100, null=True, blank=True, help_text="e.g., Obedience, Agility, Behavioral")
+    grooming_type = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        return f"Service for {self.pet.name} on {self.adoption_date}"

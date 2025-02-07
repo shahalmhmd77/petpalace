@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Service</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 250px;
+            background-color: #2C3E50;
+            color: white;
+            padding-top: 30px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            display: block;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar a:hover {
+            background-color: #34495E;
+        }
+
+        .sidebar .active {
+            background-color: #1ABC9C;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            background-color: #F8F9FA;
+            min-height: 100vh;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            background-color: #1ABC9C;
+            color: white;
+            font-weight: 600;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .btn-primary {
+            background-color: #3498DB;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980B9;
+        }
+
+        .modal-header {
+            background-color: #1ABC9C;
+            color: white;
+        }
+
+        /* Hide fields by default */
+        #trainingTypeField, #groomingTypeField {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <a href="{% url 'pet_dashboard' %}">
+            <i class="fas fa-home"></i> Dashboard
+        </a>
+        <a href="{% url 'user_profile' %}">
+            <i class="fas fa-user"></i> Profile
+        </a>
+        <a href="#">
+            <i class="fas fa-bell"></i> Notifications
+        </a>
+        <a href="{% url 'my_pets' %}">
+            <i class="fas fa-paw"></i> My Pets
+        </a>
+        <a href="{% url 'adoption' %}">
+            <i class="fas fa-heart"></i> Adoption
+        </a>
+        <a href="{% url 'service' %}" class="active">
+            <i class="fas fa-leaf"></i> Book Service
+        </a>
+        <a href="{% url 'logout' %}">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+
+    <div class="content">
+        <h2 class="mb-4">Book a Service</h2>
+
+        <div class="row">
+            <!-- Grooming Service -->
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-cut"></i> Grooming
+                    </div>
+                    <div class="card-body">
+                        <p>Professional pet grooming services.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Training Service -->
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-dumbbell"></i> Training
+                    </div>
+                    <div class="card-body">
+                        <p>Personalized training for pets.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#bookingModal">
+            <i class="fas fa-calendar-plus"></i> Book a Service
+        </button>
+
+        <!-- Booking History Table -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-history"></i> Booking History
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Category</th>
+                            <th>Date</th>
+                            <th>Service Type</th>
+                            <th>Service </th>
+                            <th>Location</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in booking %}
+                        <tr>
+                            <td>{{ booking.pet.name }}</td>
+                            <td>{{booking.pet_breed}}</td>
+                            <td>{{ booking.adoption_date }}</td>
+                            <td>{{ booking.service_type }}</td>
+                            <td>{% if booking.service_type == 'Grooming' %}{{ booking.grooming_type }}{% else %}{{ booking.training_type }} {% endif %}</td>
+                            <td>{{ booking.location }}</td>
+                            <td><span class="badge bg-success">Completed</span></td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookingModalLabel">Book a Service</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{% url 'add_service' %}">
+                        {% csrf_token %}
+                        
+                        <!-- Select Pet Name (Optional) -->
+                        <div class="mb-3">
+                            <label for="petName" class="form-label">Select Pet</label>
+                            <select class="form-select" id="petName" name="pet_name" required>
+                                <option value="">-- Select a Pet --</option>
+                                {% for pet in pets %}
+                                    <option value="{{ pet.id }}">{{ pet.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    
+                        <!-- Pet Age -->
+                        <div class="mb-3">
+                            <label for="petAge" class="form-label">Pet Age</label>
+                            <input type="number" class="form-control" id="petAge" name="pet_age" min="0" required>
+                        </div>
+                    
+                        <!-- Pet Breed -->
+                        <div class="mb-3">
+                            <label for="petBreed" class="form-label">Pet Breed</label>
+                            <input type="text" class="form-control" id="petBreed" name="pet_breed" placeholder="e.g., Labrador Retriever">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="location" class="form-label">Location</label>
+                            <input type="text" class="form-control" id="location" name="location" placeholder="">
+                        </div>
+                    
+                    
+                        <!-- Session Date -->
+                        <div class="mb-3">
+                            <label for="sessionDate" class="form-label">Session Date</label>
+                            <input type="date" class="form-control" id="sessionDate" name="adoption_date" required>
+                        </div>
+                    
+                        <!-- Session Duration -->
+                        <div class="mb-3">
+                            <label for="sessionDuration" class="form-label">Session Duration (hh:mm:ss)</label>
+                            <input type="time" step="1" class="form-control" id="sessionDuration" name="session_duration" required>
+                        </div>
+                    
+                        <!-- Service Type -->
+                        <div class="mb-3">
+                            <label for="service_type" class="form-label">Service Type</label>
+                            <select class="form-select" id="service_type" name="service_type" required>
+                                <option value="">-- Select Service Type --</option>
+                                <option value="Grooming">Grooming</option>
+                                <option value="Training">Training</option>
+                            </select>
+                        </div>
+                    
+                        <!-- Training Type (Hidden by Default) -->
+                        <div class="mb-3" id="trainingTypeField">
+                            <label for="trainingType" class="form-label">Training Type</label>
+                            <select class="form-select" id="trainingType" name="training_type">
+                                <option value="">-- Select Training Type --</option>
+                                <option value="Obedience">Obedience</option>
+                                <option value="Agility">Agility</option>
+                                <option value="Behavioral">Behavioral</option>
+                            </select>
+                        </div>
+                    
+                        <!-- Grooming Type (Hidden by Default) -->
+                        <div class="mb-3" id="groomingTypeField">
+                            <label for="groomingType" class="form-label">Grooming Type</label>
+                            <select class="form-select" id="groomingType" name="grooming_type">
+                                <option value="">-- Select Grooming Type --</option>
+                                <option value="Basic">Basic</option>
+                                <option value="Premium">Premium</option>
+                                <option value="Deluxe">Deluxe</option>
+                            </select>
+                        </div>
+                    
+                        <!-- Submit Button -->
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">Book Service</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const serviceType = document.getElementById("service_type");
+            const trainingTypeField = document.getElementById("trainingTypeField");
+            const groomingTypeField = document.getElementById("groomingTypeField");
+
+            serviceType.addEventListener("change", function () {
+                if (serviceType.value === "Training") {
+                    trainingTypeField.style.display = "block";
+                    groomingTypeField.style.display = "none";
+                } else if (serviceType.value === "Grooming") {
+                    groomingTypeField.style.display = "block";
+                    trainingTypeField.style.display = "none";
+                } else {
+                    trainingTypeField.style.display = "none";
+                    groomingTypeField.style.display = "none";
+                }
+            });
+        });
+    </script>
+</body>
+</html>

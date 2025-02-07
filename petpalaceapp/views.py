@@ -10,6 +10,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import *
+from .forms import *
 
 
 def about(request):
@@ -134,7 +135,8 @@ def login_view(request):
 
 
 def my_pets(request):
-    pets=Pet.objects.all()
+    user = request.user
+    pets=Pet.objects.filter(owner=user)
     return render(request, 'petpalaceapp/my_pets.html',{'pets':pets})
 
 
@@ -143,14 +145,13 @@ def register_pet(request):
     if request.method == 'POST':
         pet_name = request.POST.get('pet_name')
         pet_type = request.POST.get('pet_type')
-        owner_name = request.POST.get('owner_name')
         contact = request.POST.get('contact')
 
         # Save the new pet to the database
         Pet.objects.create(
+            owner=request.user,
             name=pet_name,
             pet_type=pet_type,
-            owner_name=owner_name,
             contact=contact
         )
 
@@ -364,3 +365,63 @@ def edit_trainer(request, trainer_id):
         messages.success(request, 'Trainer updated successfully!')
         return redirect('trainer_management')
     return render(request, 'edit_trainer.html', {'trainer': trainer})
+
+
+def adoption(request):
+    my_pets = Pet.objects.filter(owner=request.user)
+    my_adoptions = PetAdoption.objects.filter(pet__owner=request.user)
+    other_adoptions = PetAdoption.objects.exclude(pet__owner=request.user)
+    print(other_adoptions)
+
+    return render(request, 'adoption.html', {
+        'pets': my_pets,
+        'my_adoptions': my_adoptions,  
+        'adoption_ads': other_adoptions  
+    })
+
+def add_adoption(request):
+    if request.method == 'POST':
+        pet_id = request.POST.get('pet_id')
+        pet=get_object_or_404(Pet,id=pet_id)
+        contact = request.POST.get('contact')
+        location = request.POST.get('location')
+        date=request.POST.get('date')
+
+        PetAdoption.objects.create(
+            pet=pet,
+            contact=contact,
+        )
+
+        messages.success(request, 'Adoption request submitted successfully!')
+        return redirect('adoption')
+
+    return redirect('adoption')
+
+
+def service(request):
+    pets=Pet.objects.filter(owner=request.user)
+    booking=Service.objects.filter(pet__owner=request.user)
+    return render(request, 'service.html',{'pets':pets,'booking':booking})
+
+
+def add_service(request):
+    if request.method == 'POST':
+        pet_id = request.POST.get('pet_name')
+        pet=get_object_or_404(Pet,id=pet_id)
+
+        form = PetServiceForm(request.POST)
+        if form.is_valid():
+            service = form.save(commit=False)
+            service.pet = pet
+            service.save()
+        else:
+            print(form.errors)
+
+        messages.success(request, 'Service request submitted successfully!')
+        return redirect('service')
+
+    return redirect('service')
+
+def service_management(request):
+    services = Service.objects.all()
+    return render(request, 'service_management.html', {'services': services})

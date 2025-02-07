@@ -95,7 +95,7 @@
             margin-top: 15px;
             display: block;
             text-align: center;
-            background-color: #007bff;
+            background-color: #f76510;
             color: #fff;
             padding: 10px;
             border: none;
@@ -119,11 +119,10 @@
             <img src="{% static 'img/team-2.jpg' %}" alt="Pet Image">
             <div class="pet-details">
                 <h3>{{ pet.name }}</h3>
-                <p><strong>Owner:</strong> {{ pet.owner_name }}</p>
                 <p><strong>Contact:</strong> {{ pet.contact }}</p>
                 <span class="pet-type">{{ pet.pet_type|title }}</span>
             </div>
-            <a href="tel:{{ pet.contact }}" class="contact-btn">Contact Owner</a>
+            <a href="" class="contact-btn">Delete</a>
         </div>
         {% empty %}
         <p style="text-align: center; font-size: 18px; color: #666;">No pets registered yet.</p>
