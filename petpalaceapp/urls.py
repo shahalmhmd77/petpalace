@@ -60,6 +60,11 @@ urlpatterns = [
 
     path('service_management/', views.service_management, name='service_management'),
 
+    path('change_trainer/', views.change_trainer, name='change_trainer'),
+    path('trainer_history/', views.trainer_history, name='trainer_history'),
+    path('grooming_completed/', views.grooming_completed, name='grooming_completed'),
+
+
 
 
 

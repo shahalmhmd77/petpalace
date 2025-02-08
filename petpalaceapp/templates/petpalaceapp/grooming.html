@@ -31,14 +31,14 @@
         <h2 class="mb-4">Grooming Management</h2>
         
         <!-- Add New Appointment Button -->
-        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addModal">Add New Appointment</button>
-        
+        <!-- <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addModal">Add New Appointment</button>
+         -->
         <!-- Grooming Table -->
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Pet Name</th>
+                    <th>Breed</th>
                     <th>Owner Name</th>
                     <th>Appointment Date</th>
                     <th>Notes</th>
@@ -46,18 +46,18 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Example Row -->
+                {% for item in services %}
                 <tr>
-                    <td>1</td>
-                    <td>Buddy</td>
-                    <td>John Doe</td>
+                    <td>{{item.id}}</td>
+                    <td>{{item.pet_breed}}</td>
+                    <td>{{item.pet.owner.username}}</td>
                     <td>2025-01-20</td>
                     <td>Regular grooming</td>
                     <td>
-                        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button>
-                        <button class="btn btn-danger btn-sm">Delete</button>
+                        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#editModal">Mark as Completed</button>
                     </td>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
 

@@ -60,8 +60,12 @@ def shop(request):
 def trainer_dashboard(request):
     return render(request, 'petpalaceapp/trainer_dashboard.html') 
 
+
 def grooming(request):
-    return render(request, 'petpalaceapp/grooming.html') 
+    # service_type='Grooming'
+    services=Service.objects.filter(trainer__user=request.user)
+    return render(request, 'petpalaceapp/grooming.html',{'services':services}) 
+
 
 def boarding(request):
     return render(request, 'petpalaceapp/boarding.html') 
@@ -288,7 +292,22 @@ def shop_order_history(request):
     return render(request, 'shop_order_history.html', {'orders': orders})
 
 def user_profile(request):
-    user_data=get_object_or_404(Customer,user=request.user)
+    user_data=get_object_or_404(Trainer,user=request.user)
+    if request.method == 'POST':
+        full_name = request.POST.get('name')
+        email = request.POST.get('email')
+        contact_number = request.POST.get('phone')
+        location = request.POST.get('location')
+        username = request.POST.get('username')
+        user_data.user.username = username
+        user_data.user.save()
+
+        user_data.full_name = full_name
+        user_data.email = email
+        user_data.contact = contact_number
+        user_data.location = location
+        user_data.save()
+        return redirect('trainer_profile')
     return render(request,'user_profile.html',{'user_data':user_data})
 
 
@@ -424,4 +443,29 @@ def add_service(request):
 
 def service_management(request):
     services = Service.objects.all()
-    return render(request, 'service_management.html', {'services': services})
+    trainers=Trainer.objects.all()
+    return render(request, 'service_management.html', {'services': services,'trainers':trainers})
+
+
+
+def change_trainer(request):
+    if request.method == 'POST':
+        trainer_id = request.POST.get('trainer_id')
+        service_id = request.POST.get('service_id')
+        trainer = get_object_or_404(Trainer, id=trainer_id)
+        service = get_object_or_404(Service, id=service_id)
+        service.trainer = trainer
+        service.save()
+        messages.success(request, 'Trainer changed successfully!')
+        return redirect('service_management')
+
+    return redirect('service_management')
+
+
+def trainer_history(request):
+    trainers = Trainer.objects.all()
+    return render(request, 'trainer_history.html', {'trainers': trainers})
+
+
+def grooming_completed(request):
+    return render('grooming')

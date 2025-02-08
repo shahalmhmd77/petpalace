@@ -141,6 +141,8 @@ class Service(models.Model):
     session_duration = models.DurationField(null=True, blank=True, help_text="Duration of the session (hh:mm:ss)")
     training_type = models.CharField(max_length=100, null=True, blank=True, help_text="e.g., Obedience, Agility, Behavioral")
     grooming_type = models.CharField(max_length=100, null=True, blank=True)
+    completed = models.BooleanField(null=True, blank=True)
+
 
     def __str__(self):
         return f"Service for {self.pet.name} on {self.adoption_date}"

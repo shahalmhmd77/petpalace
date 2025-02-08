@@ -113,12 +113,13 @@
 </head>
 <body>
     <div class="sidebar">
-        <a href="#" class="active">Dashboard</a>
+        <a href="{% url 'trainer_profile' %}">Profile</a>
+        <a href="{% url 'trainer_dashboard' %}" class="active">Dashboard</a>
         <a href="{% url 'grooming' %}">Grooming</a>
         <a href="{% url 'boarding' %}">Boarding</a>
         <a href="{% url 'training' %}">Training</a>
+        <a href="{% url 'trainer_history' %}">History</a>
         <a href="#">Notifications</a>
-        <a href="{% url 'trainer_profile' %}">Profile</a>
         <a href="{% url 'logout' %}">Logout</a>
     </div>
 
@@ -132,19 +133,19 @@
             <div class="card">
                 <h3>Grooming</h3>
                 <p>Manage grooming appointments and schedules.</p>
-                <button>View Details</button>
+                <a href="{% url 'grooming' %}"><button>View Details</button></a>
             </div>
 
             <div class="card">
                 <h3>Boarding</h3>
                 <p>Track and organize boarding services for pets.</p>
-                <button>View Details</button>
+                <a href="{% url 'grooming' %}"><button>View Details</button></a>
             </div>
 
             <div class="card">
                 <h3>Training</h3>
                 <p>Monitor and schedule training sessions.</p>
-                <button>View Details</button>
+                <a href="{% url 'training' %}"><button>View Details</button></a>
             </div>
         </div>
     </div>
