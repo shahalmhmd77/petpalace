@@ -65,7 +65,10 @@ urlpatterns = [
     path('grooming_completed/', views.grooming_completed, name='grooming_completed'),
 
 
-
+    path('list_products/', views.list_products, name='list_products'),
+    path('cart_view/', views.cart_view, name='cart_view'),
+    path('add_to_cart/', views.add_to_cart, name='add_to_cart'),
+    path('product_payment/', views.product_payment, name='product_payment'),
 
 
 

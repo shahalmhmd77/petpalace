@@ -81,7 +81,7 @@ class OrderHistory(models.Model):
         return f"Order on {self.order_date.strftime('%Y-%m-%d')} - Status: {self.status}"
 
 
-class productWithQuantity(models.Model):
+class ProductWithQuantity(models.Model):
     product=models.ForeignKey(Product,on_delete=models.CASCADE,null=True,blank=True)
     quantity=models.IntegerField(default=0)
 
@@ -146,3 +146,22 @@ class Service(models.Model):
 
     def __str__(self):
         return f"Service for {self.pet.name} on {self.adoption_date}"
+    
+
+
+
+
+class BuyHistory(models.Model):
+    user = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
+    supplements = models.ManyToManyField('ProductWithQuantity', blank=True)
+    purchase_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    payment_method = models.CharField(max_length=50, null=True, blank=True)  
+    card_number = models.CharField(max_length=20, null=True, blank=True) 
+    expiry_date = models.CharField(max_length=7, null=True, blank=True)  
+    cvv = models.CharField(max_length=4, null=True, blank=True)  
+    cardholder_name = models.CharField(max_length=100, null=True, blank=True)
+    upi_id = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        return f"BuyHistory for {self.user} on {self.purchase_date}"

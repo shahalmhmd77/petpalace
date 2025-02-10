@@ -469,3 +469,93 @@ def trainer_history(request):
 
 def grooming_completed(request):
     return render('grooming')
+
+
+def list_products(request):
+    products = Product.objects.all()
+    return render(request, 'list_products.html', {'products': products})
+
+
+def add_to_cart(request):
+    item_id = request.GET.get('item_id', None)
+    decrease = request.GET.get('decrease', False)
+    remove = request.GET.get('remove', False)
+    if item_id:
+        product = get_object_or_404(Product, id=item_id)
+        cart_items = request.session.get('cart_items', [])
+        
+        product_price = float(product.price)
+        image = product.image.url if product.image else ''
+        
+        existing_item = next((item for item in cart_items if item['id'] == product.id), None)
+        if remove: 
+            if existing_item:
+                cart_items.remove(existing_item)  
+                messages.success(request, f'{product.name} has been removed from your cart.')
+        elif existing_item:
+            if decrease: 
+                existing_item['quantity'] -= 1
+                if existing_item['quantity'] <= 0:
+                    cart_items.remove(existing_item)
+            else:
+                existing_item['quantity'] += 1
+        else:
+            cart_item = {
+                'id': product.id,
+                'name': product.name,
+                'price': product_price, 
+                'quantity': 1,
+                'image':image
+            }
+            cart_items.append(cart_item)
+        
+        request.session['cart_items'] = cart_items
+        if not decrease and not remove:
+            messages.success(request, f'{product.name} has been added to your cart.')
+    return redirect('cart_view')
+
+
+def cart_view(request):
+    cart_items = request.session.get('cart_items', [])
+    total_price = sum(float(item['price']) * item['quantity'] for item in cart_items)
+    return render(request, 'cart.html', {'cart_items': cart_items, 'total_price': total_price})
+
+
+def product_payment(request):
+    cart_items = request.session.get('cart_items', [])
+    total_price = sum(float(item['price']) * item['quantity'] for item in cart_items)
+    return render(request, 'product_payment.html', {'cart_items': cart_items, 'total_price': total_price})
+
+
+
+def proceed_payment(request):
+    if request.method == "POST":
+        cart_items = request.session.get('cart_items', [])
+        user = get_object_or_404(Customer, user=request.user)
+        total_price = sum(float(item['price']) * item['quantity'] for item in cart_items)
+        quantity_list = []
+
+        for item in cart_items:
+            product = get_object_or_404(Product, id=item['id'])
+            obj = ProductWithQuantity.objects.create(supplement=product, quantity=item['quantity'])
+            quantity_list.append(obj)
+
+        payment_method = request.POST.get('payment_method')
+        if payment_method == 'card':
+            card_number = request.POST.get('card_number')
+            expiry_date = request.POST.get('expiry_date')
+            cvv = request.POST.get('cvv')
+            cardholder_name = request.POST.get('cardholder_name')
+            payment = BuyHistory.objects.create(user=user, total_amount=total_price,card_number=card_number,expiry_date=expiry_date,cardholder_name=cardholder_name,cvv=cvv,payment_method='card')
+        
+        elif payment_method == 'upi':
+            upi_id = request.POST.get('upi_id')
+            payment = BuyHistory.objects.create(user=user, total_amount=total_price,upi_id=upi_id,payment_method='upi')
+
+        payment.supplements.add(*quantity_list)
+        request.session['cart_items'] = [] 
+        messages.success(request, "Your cart has been cleared.")
+        return redirect('payment_success')
+    
+    return redirect('product_payment')
+
