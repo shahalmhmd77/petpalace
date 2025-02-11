@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Listing</title>
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <!-- Custom Styles -->
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      color: #007bff;
+      margin-bottom: 40px;
+    }
+
+    .event-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .event-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .event-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .event-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .event-card-content {
+      padding: 20px;
+    }
+
+    .event-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      color: #007bff;
+    }
+
+    .event-card p {
+      font-size: 1rem;
+      color: #666;
+      margin-bottom: 15px;
+    }
+
+    .event-card .event-date {
+      font-size: 0.9rem;
+      color: #888;
+      margin-bottom: 10px;
+    }
+
+    .event-card .view-details-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #007bff, #00d4ff);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .event-card .view-details-btn:hover {
+      background: linear-gradient(135deg, #0056b3, #0099cc);
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal.open {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 10px;
+      max-width: 600px;
+      width: 90%;
+      padding: 20px;
+      position: relative;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-content img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .modal-content h2 {
+      font-size: 2rem;
+      margin-top: 20px;
+      color: #007bff;
+    }
+
+    .modal-content p {
+      font-size: 1rem;
+      color: #666;
+      margin: 10px 0;
+    }
+
+    .modal-content .event-details {
+      margin-top: 20px;
+    }
+
+    .modal-content .event-details p {
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    .modal-content .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #ff4d4d;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content .close-btn:hover {
+      background: #cc0000;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Upcoming Events</h1>
+    <div class="event-grid">
+      <!-- Event Card 1 -->
+      <div class="event-card">
+        <img src="https://via.placeholder.com/400x200" alt="Event Image">
+        <div class="event-card-content">
+          <h3>Tech Conference 2023</h3>
+          <p>Join us for the biggest tech event of the year!</p>
+          <p class="event-date"><i class="fas fa-calendar-alt"></i> October 25, 2023</p>
+          <a href="#" class="view-details-btn" onclick="openModal('event1')">View Details</a>
+        </div>
+      </div>
+
+      <!-- Event Card 2 -->
+      <div class="event-card">
+        <img src="https://via.placeholder.com/400x200" alt="Event Image">
+        <div class="event-card-content">
+          <h3>Music Festival</h3>
+          <p>Experience the best of live music and performances.</p>
+          <p class="event-date"><i class="fas fa-calendar-alt"></i> November 10, 2023</p>
+          <a href="#" class="view-details-btn" onclick="openModal('event2')">View Details</a>
+        </div>
+      </div>
+
+      <!-- Add more event cards as needed -->
+    </div>
+  </div>
+
+  <!-- Modal for Event Details -->
+  <div id="event1" class="modal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal('event1')">&times;</button>
+      <img src="https://via.placeholder.com/600x300" alt="Event Image">
+      <h2>Tech Conference 2023</h2>
+      <p>Join us for the biggest tech event of the year! Learn from industry leaders and network with professionals.</p>
+      <div class="event-details">
+        <p><i class="fas fa-calendar-alt"></i> October 25, 2023</p>
+        <p><i class="fas fa-map-marker-alt"></i> San Francisco, CA</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="event2" class="modal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal('event2')">&times;</button>
+      <img src="https://via.placeholder.com/600x300" alt="Event Image">
+      <h2>Music Festival</h2>
+      <p>Experience the best of live music and performances from top artists around the world.</p>
+      <div class="event-details">
+        <p><i class="fas fa-calendar-alt"></i> November 10, 2023</p>
+        <p><i class="fas fa-map-marker-alt"></i> New York, NY</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript for Modal -->
+  <script>
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.add('open');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('open');
+    }
+  </script>
+</body>
+</html>

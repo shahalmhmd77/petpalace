@@ -81,7 +81,7 @@
 <body>
     <div class="register-form">
         <h2>Register Your Pet</h2>
-        <form action="{% url 'register_pet' %}" method="post">
+        <form action="{% url 'register_pet' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group">
                 <label for="pet-name">Pet Name</label>
@@ -103,6 +103,10 @@
             <div class="form-group">
                 <label for="contact">Contact Number</label>
                 <input type="tel" id="contact" name="contact" required>
+            </div>
+            <div class="form-group">
+                <label for="image">Contact Number</label>
+                <input type="file" id="image" name="image" required>
             </div>
             <button type="submit" class="submit-btn">Register</button>
         </form>

@@ -48,6 +48,7 @@ class Pet(models.Model):
     name = models.CharField(max_length=100)
     pet_type = models.CharField(max_length=10,null=True,blank=True)
     contact = models.CharField(max_length=10)
+    image = models.ImageField(upload_to='pet_images/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.name} ({self.pet_type})"
@@ -149,8 +150,6 @@ class Service(models.Model):
     
 
 
-
-
 class BuyHistory(models.Model):
     user = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
     supplements = models.ManyToManyField('ProductWithQuantity', blank=True)
@@ -162,6 +161,24 @@ class BuyHistory(models.Model):
     cvv = models.CharField(max_length=4, null=True, blank=True)  
     cardholder_name = models.CharField(max_length=100, null=True, blank=True)
     upi_id = models.CharField(max_length=100, null=True, blank=True)
+    order_status = models.CharField(max_length=20, choices=[
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+    ] , null=True, blank=True)
 
     def __str__(self):
         return f"BuyHistory for {self.user} on {self.purchase_date}"
+
+
+class Events(models.Model):
+    event_name = models.CharField(max_length=100)
+    event_date = models.DateField()
+    event_time = models.TimeField()
+    location = models.CharField(max_length=100)
+    description = models.TextField()
+    category = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='events', null=True, blank=True)
+
+    def __str__(self):
+        return self.event_name

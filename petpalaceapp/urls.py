@@ -73,6 +73,11 @@ urlpatterns = [
     path('payment_success/', views.payment_success, name='payment_success'),
     path('user-order-history/', views.order_history_view, name='user_order_history'),
 
+    path('delete_pet/<int:pet_id>/', views.delete_pet, name='delete_pet'),
+    path('events/', views.events, name='events'),
+    path('delete_event/<int:event_id>/', views.delete_event, name='delete_event'),
+    path('view_event/<int:event_id>/', views.view_event, name='view_event'),
+
 
 ]
 

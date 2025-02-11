@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-    {% load static %}
+{% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,7 +21,7 @@
             transition: background-color 0.3s ease;
         }
         .btn:hover {
-            background-color: #0d6efd;
+            background-color: #198754;
             color: #fff;
         }
     </style>
@@ -30,40 +30,33 @@
     <div class="container mt-5">
         <h2 class="mb-4">Boarding Management</h2>
         
-        <!-- Add New Boarding Record Button -->
-        <!-- <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addModal">Add New Boarding</button> -->
-        
-        <!-- Boarding Table -->
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Pet Name</th>
+                    <th>Breed</th>
                     <th>Owner Name</th>
-                    <th>Check-In Date</th>
-                    <th>Check-Out Date</th>
+                    <th>Boarding Date</th>
                     <th>Notes</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Example Row -->
+                {% for item in services %}
                 <tr>
-                    <td>1</td>
-                    <td>Max</td>
-                    <td>Jane Doe</td>
-                    <td>2025-01-15</td>
+                    <td>{{item.id}}</td>
+                    <td>{{item.pet_breed}}</td>
+                    <td>{{item.pet.owner.username}}</td>
                     <td>2025-01-20</td>
-                    <td>Special diet</td>
+                    <td>Regular boarding</td>
                     <td>
                         <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#editModal">Mark as Completed</button>
-                        <!-- <button class="btn btn-danger btn-sm">Delete</button> -->
                     </td>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
 
-        <!-- Add Modal -->
         <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -82,12 +75,8 @@
                                 <input type="text" class="form-control" id="ownerName" placeholder="Enter owner name">
                             </div>
                             <div class="mb-3">
-                                <label for="checkInDate" class="form-label">Check-In Date</label>
-                                <input type="date" class="form-control" id="checkInDate">
-                            </div>
-                            <div class="mb-3">
-                                <label for="checkOutDate" class="form-label">Check-Out Date</label>
-                                <input type="date" class="form-control" id="checkOutDate">
+                                <label for="boardingDate" class="form-label">Boarding Date</label>
+                                <input type="date" class="form-control" id="boardingDate">
                             </div>
                             <div class="mb-3">
                                 <label for="notes" class="form-label">Notes</label>
@@ -100,7 +89,6 @@
             </div>
         </div>
 
-        <!-- Edit Modal -->
         <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -112,23 +100,19 @@
                         <form>
                             <div class="mb-3">
                                 <label for="editPetName" class="form-label">Pet Name</label>
-                                <input type="text" class="form-control" id="editPetName" value="Max">
+                                <input type="text" class="form-control" id="editPetName" value="Buddy">
                             </div>
                             <div class="mb-3">
                                 <label for="editOwnerName" class="form-label">Owner Name</label>
-                                <input type="text" class="form-control" id="editOwnerName" value="Jane Doe">
+                                <input type="text" class="form-control" id="editOwnerName" value="John Doe">
                             </div>
                             <div class="mb-3">
-                                <label for="editCheckInDate" class="form-label">Check-In Date</label>
-                                <input type="date" class="form-control" id="editCheckInDate" value="2025-01-15">
-                            </div>
-                            <div class="mb-3">
-                                <label for="editCheckOutDate" class="form-label">Check-Out Date</label>
-                                <input type="date" class="form-control" id="editCheckOutDate" value="2025-01-20">
+                                <label for="editBoardingDate" class="form-label">Boarding Date</label>
+                                <input type="date" class="form-control" id="editBoardingDate" value="2025-01-20">
                             </div>
                             <div class="mb-3">
                                 <label for="editNotes" class="form-label">Notes</label>
-                                <textarea class="form-control" id="editNotes" rows="3">Special diet</textarea>
+                                <textarea class="form-control" id="editNotes" rows="3">Regular boarding</textarea>
                             </div>
                             <button type="submit" class="btn btn-primary">Update</button>
                         </form>

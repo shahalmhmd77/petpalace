@@ -73,7 +73,7 @@
 <body>
     <div class="profile-edit-container">
         <h2>Edit Shop Owner Profile</h2>
-        <form action="{% url 'user_profile' %}" method="POST" class="profile-edit-form">
+        <form action="{% url 'trainer_profile' %}" method="POST" class="profile-edit-form">
             {% csrf_token %}
             <div class="form-group">
                 <label for="shopName"> Name:</label>

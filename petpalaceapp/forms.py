@@ -32,3 +32,8 @@ class PetServiceForm(forms.ModelForm):
         model = Service
         fields = '__all__'
      
+
+class EventForm(forms.ModelForm):
+    class Meta:
+        model = Events
+        fields = ['event_name', 'event_date', 'event_time', 'location', 'description','image']

@@ -50,8 +50,30 @@ def shop_dashboard(request):
 def pet_dashboard(request):
     return render(request, 'petpalaceapp/pet_dashboard.html')
 
+from datetime import datetime
 def index(request):
-    return render(request, 'petpalaceapp/index.html') 
+
+    banners = [
+    {
+        "title": "Happy Pets",
+        "description": "Your pet deserves the best!",
+        "image_url": "https://th.bing.com/th/id/OIP.GTpg1AGnrBKB2-9OyG0qVQHaEK?w=320&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7"
+    },
+    {
+        "title": "New Adoption Center",
+        "description": "Find your new best friend today!",
+        "image_url": "https://images.pexels.com/photos/4587993/pexels-photo-4587993.jpeg"
+    },
+    {
+        "title": "Special Grooming Services",
+        "description": "Pamper your pet with luxury care!",
+        "image_url": "https://images.pexels.com/photos/7210709/pexels-photo-721070"
+    }
+]
+    
+    events = Events.objects.filter(event_date__gte=datetime.now())
+    products=Product.objects.all()
+    return render(request, 'petpalaceapp/index.html', {'banners': events, 'products':products}) 
 
 def shop(request):
     return render(request, 'petpalaceapp/shop.html') 
@@ -63,16 +85,19 @@ def trainer_dashboard(request):
 
 def grooming(request):
     # service_type='Grooming'
-    services=Service.objects.filter(trainer__user=request.user)
+    services=Service.objects.filter(trainer__user=request.user,service_type='Grooming')
     return render(request, 'petpalaceapp/grooming.html',{'services':services}) 
 
 
 def boarding(request):
-    return render(request, 'petpalaceapp/boarding.html') 
+    # service_type='Boarding'
+    services=Service.objects.filter(trainer__user=request.user,service_type='Boarding')
+    return render(request, 'petpalaceapp/boarding.html',{"services":services}) 
 
 def training(request):
-    training=PetTrainingData.objects.all()
-    return render(request, 'petpalaceapp/training.html',{'training_data':training}) 
+    # service_type='Training'
+    services=Service.objects.filter(trainer__user=request.user,service_type='Training')
+    return render(request, 'petpalaceapp/training.html',{'services':services})
 
 def manage_pets(request):
     return render(request, 'petpalaceapp/manage_pets.html') 
@@ -150,13 +175,16 @@ def register_pet(request):
         pet_name = request.POST.get('pet_name')
         pet_type = request.POST.get('pet_type')
         contact = request.POST.get('contact')
+        image = request.FILES.get('image')
 
         # Save the new pet to the database
         Pet.objects.create(
             owner=request.user,
             name=pet_name,
             pet_type=pet_type,
-            contact=contact
+            contact=contact,
+            image=image
+
         )
 
         # Redirect to a success page or the main list
@@ -164,6 +192,12 @@ def register_pet(request):
         return redirect('my_pets')  # Replace 'home' with your desired view name
 
     return render(request, 'petpalaceapp/register_pet.html')
+
+def delete_pet(request, pet_id):
+    pet = get_object_or_404(Pet, id=pet_id)
+    pet.delete()
+    messages.success(request, 'Pet deleted successfully!')
+    return redirect('my_pets')
 
 
 def shop_logout(request):
@@ -288,7 +322,7 @@ def delete_product(request, product_id):
 
 
 def shop_order_history(request):
-    orders = OrderHistory.objects.filter()
+    orders = BuyHistory.objects.filter()
     return render(request, 'shop_order_history.html', {'orders': orders})
 
 def user_profile(request):
@@ -303,9 +337,14 @@ def user_profile(request):
         user_data.user.save()
 
         user_data.full_name = full_name
+        user_data.name = username
         user_data.email = email
         user_data.contact = contact_number
         user_data.location = location
+        user_data.expertise = request.POST.get('expertise')
+        user_data.experience = request.POST.get('experience')
+        user_data.bio = request.POST.get('bio')
+        user_data.image = request.FILES.get('image', user_data.image)
         user_data.save()
         return redirect('trainer_profile')
     return render(request,'user_profile.html',{'user_data':user_data})
@@ -348,7 +387,7 @@ def add_trainer(request):
             expertise=expertise,
             experience=experience,
             contact=contact,
-            user=User.objects.create_user(username=username, email=email, password='defaultpassword'),
+            user=User.objects.create_user(username=username, email=email, password=password),
             bio=bio,
             image=image
         )
@@ -463,8 +502,8 @@ def change_trainer(request):
 
 
 def trainer_history(request):
-    trainers = Trainer.objects.all()
-    return render(request, 'trainer_history.html', {'trainers': trainers})
+    history = Service.objects.filter(trainer__user=request.user)
+    return render(request, 'trainer_history.html', {'history': history})
 
 
 def grooming_completed(request):
@@ -514,7 +553,7 @@ def add_to_cart(request):
             messages.success(request, f'{product.name} has been added to your cart.')
     return redirect('cart_view')
 
-
+@login_required(login_url='login')
 def cart_view(request):
     cart_items = request.session.get('cart_items', [])
     total_price = sum(float(item['price']) * item['quantity'] for item in cart_items)
@@ -567,3 +606,27 @@ def order_history_view(request):
     user = request.user
     buy_history = BuyHistory.objects.filter(user__user=user).order_by('-purchase_date')
     return render(request, 'user_order_history.html', {'buy_history': buy_history})
+
+def events(request):
+    if request.method == "POST":
+        form = EventForm(request.POST,request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('events') 
+    else:
+        form = EventForm()
+
+    events_list = Events.objects.all()
+    return render(request, 'add_events.html', {'form': form, 'events': events_list})
+
+
+def delete_event(request, event_id):
+    event = get_object_or_404(Events, id=event_id)
+    event.delete()
+    messages.success(request, 'Event deleted successfully!')
+    return redirect('events')
+
+
+def view_event(request, event_id):
+    event = get_object_or_404(Events, id=event_id)
+    return render(request, 'view_event.html', {'event': event})

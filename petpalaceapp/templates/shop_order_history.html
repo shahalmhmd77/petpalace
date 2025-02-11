@@ -80,7 +80,6 @@
                     <th>Order ID</th>
                     <th>Customer Name</th>
                     <th>Product Name</th>
-                    <th>Quantity</th>
                     <th>Total Price</th>
                     <th>Order Date</th>
                     <th>Status</th>
@@ -91,12 +90,23 @@
                 {% for order in orders %}
                 <tr>
                     <td>#{{ order.id }}</td>
-                    <td>{{ order.user.username }}</td>
-                    <td>{{ order.products.name }}</td>
-                    <td>{{ order.quantity }}</td>
+                    <td>{{ order.user.user.username }}</td>
+                    <td>
+                        {% for item in order.supplements.all %}
+                        <p>{{ item.product.name }}</p>
+                        <p>{{ item.product.quantity }}</p>
+                        {% endfor %}
+                    </td>
+                    
                     <td>${{ order.total_amount }}</td>
-                    <td>{{ order.order_date|date:"Y-m-d" }}</td>
-                    <td class="status-{{ order.status }}">{{ order.get_status_display }}</td>
+                    <td>{{ order.purchase_date|date:"Y-m-d" }}</td>
+                    <td>
+                        {% if record.order_status == 'completed' %}
+                            <span class="badge bg-success">Completed</span>
+                        {% else %}
+                            <span class="badge bg-warning">Pending</span>
+                        {% endif %}
+                    </td>
                     <td>
                        <button>Status</button>
                     </td>

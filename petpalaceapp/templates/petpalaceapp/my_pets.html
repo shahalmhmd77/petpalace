@@ -116,13 +116,18 @@
     <div class="pet-list">
         {% for pet in pets %}
         <div class="pet-card">
-            <img src="{% static 'img/team-2.jpg' %}" alt="Pet Image">
+            {% if pet.image %}
+            <img src="{{ pet.image.url }}" alt="Pet Image">
+
+            {% else %}
+            <img src="" alt="Pet Image">
+            {% endif %}
             <div class="pet-details">
                 <h3>{{ pet.name }}</h3>
                 <p><strong>Contact:</strong> {{ pet.contact }}</p>
                 <span class="pet-type">{{ pet.pet_type|title }}</span>
-            </div>
-            <a href="" class="contact-btn">Delete</a>
+            </div> 
+            <a href="{% url 'delete_pet' pet.id %}" class="contact-btn">Delete</a>
         </div>
         {% empty %}
         <p style="text-align: center; font-size: 18px; color: #666;">No pets registered yet.</p>
