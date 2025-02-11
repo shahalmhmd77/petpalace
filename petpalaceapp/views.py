@@ -292,7 +292,7 @@ def shop_order_history(request):
     return render(request, 'shop_order_history.html', {'orders': orders})
 
 def user_profile(request):
-    user_data=get_object_or_404(Trainer,user=request.user)
+    user_data=get_object_or_404(Customer,user=request.user)
     if request.method == 'POST':
         full_name = request.POST.get('name')
         email = request.POST.get('email')
@@ -537,7 +537,7 @@ def proceed_payment(request):
 
         for item in cart_items:
             product = get_object_or_404(Product, id=item['id'])
-            obj = ProductWithQuantity.objects.create(supplement=product, quantity=item['quantity'])
+            obj = ProductWithQuantity.objects.create(product=product, quantity=item['quantity'])
             quantity_list.append(obj)
 
         payment_method = request.POST.get('payment_method')
@@ -559,3 +559,11 @@ def proceed_payment(request):
     
     return redirect('product_payment')
 
+def payment_success(request):
+    return render(request, 'payment_success.html')
+
+
+def order_history_view(request):
+    user = request.user
+    buy_history = BuyHistory.objects.filter(user__user=user).order_by('-purchase_date')
+    return render(request, 'user_order_history.html', {'buy_history': buy_history})

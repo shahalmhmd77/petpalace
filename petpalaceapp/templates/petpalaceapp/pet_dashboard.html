@@ -134,7 +134,7 @@
             <i class="fas fa-home"></i> Dashboard
         </a>
         <a href="{% url 'user_profile' %}">
-            <i class="fas fa-user"></i> Profile
+            <i class="fas fa-user-circle"></i> Profile
         </a>
         <a href="#">
             <i class="fas fa-bell"></i> Notifications
@@ -145,11 +145,18 @@
         <a href="{% url 'adoption' %}">
             <i class="fas fa-heart"></i> Adoption
         </a>
-        <a href="{% url 'service' %}"><i class="fas fa-leaf"></i> Book Service</a>
-        <a href="{% url 'list_products' %}"><i class="fas fa-product"></i> List Products</a>
-        <a href="{% url 'cart_view' %}"><i class="fas fa-product"></i> Cart</a>
-
-       
+        <a href="{% url 'service' %}">
+            <i class="fas fa-concierge-bell"></i> Book Service
+        </a>
+        <a href="{% url 'list_products' %}">
+            <i class="fas fa-box-open"></i> List Products
+        </a>
+        <a href="{% url 'cart_view' %}">
+            <i class="fas fa-shopping-cart"></i> Cart
+        </a>
+        <a href="{% url 'user_order_history' %}">
+            <i class="fas fa-receipt"></i> Order History
+        </a>
         <a href="/pet-owner/adoption-requests">
             <i class="fas fa-clipboard-list"></i> Adoption Requests
         </a>
@@ -157,7 +164,7 @@
             <i class="fas fa-sign-out-alt"></i> Logout
         </a>
     </div>
-
+    
     <!-- Main Content Area -->
     <div class="content">
         <!-- Top Navbar -->

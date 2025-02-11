@@ -17,5 +17,6 @@ admin.site.register(OrderHistory)
 admin.site.register(ProductWithQuantity)
 admin.site.register(PetAdoption)
 admin.site.register(Service)
+admin.site.register(BuyHistory)
 
 

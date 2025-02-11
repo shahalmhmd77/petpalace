@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .order {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #fafafa;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .order:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .order-details {
+            margin-top: 10px;
+        }
+
+        .product-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .product-item {
+            background-color: #e8f4fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+
+        .total-amount {
+            color: #27ae60;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #888;
+            font-size: 1.2em;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Your Order History</h1>
+
+    {% if buy_history %}
+        {% for order in buy_history %}
+        <div class="order">
+            <div class="order-header">
+                <span>Order Date: {{ order.purchase_date|date:"F j, Y, g:i a" }}</span>
+                <span>Payment: {{ order.payment_method|default:"N/A" }}</span>
+            </div>
+
+            <div class="order-details">
+                <strong>Products:</strong>
+                <ul class="product-list">
+                    {% for product in order.supplements.all %}
+                        <li class="product-item">
+                            {{ product.name }} - Quantity: {{ product.quantity }}
+                        </li>
+                    {% empty %}
+                        <li>No products found for this order.</li>
+                    {% endfor %}
+                </ul>
+
+                <p class="total-amount">Total Amount: ${{ order.total_amount }}</p>
+
+                {% if order.payment_method == 'Card' %}
+                    <p>Card Number: **** **** **** {{ order.card_number|slice:"-4:" }}</p>
+                    <p>Cardholder Name: {{ order.cardholder_name }}</p>
+                {% elif order.payment_method == 'UPI' %}
+                    <p>UPI ID: {{ order.upi_id }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="empty-message">You haven't made any purchases yet!</p>
+    {% endif %}
+</div>
+
+</body>
+</html>

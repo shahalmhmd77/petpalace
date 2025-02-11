@@ -69,7 +69,9 @@ urlpatterns = [
     path('cart_view/', views.cart_view, name='cart_view'),
     path('add_to_cart/', views.add_to_cart, name='add_to_cart'),
     path('product_payment/', views.product_payment, name='product_payment'),
-
+    path('proceed_payment/', views.proceed_payment, name='proceed_payment'),
+    path('payment_success/', views.payment_success, name='payment_success'),
+    path('user-order-history/', views.order_history_view, name='user_order_history'),
 
 
 ]
