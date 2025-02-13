@@ -163,9 +163,12 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Service Name</th>
-                            <th>Category</th>
-                            <th>Date</th>
+                            <th>Pet Name</th>
+                            <th>Pet Type</th>
+                            <th>Pet Age</th>
+                            <th>Pet Breed</th>
+                            <th>Session Date</th>
+                            <th>Session Duration</th>
                             <th>Service Type</th>
                             <th>Service </th>
                             <th>Location</th>
@@ -176,11 +179,16 @@
                         {% for booking in booking %}
                         <tr>
                             <td>{{ booking.pet.name }}</td>
-                            <td>{{booking.pet_breed}}</td>
+                            <td>{{ booking.pet.pet_type }}</td>
+                            <td>{{ booking.pet_age }}</td>
+                            <td>{{ booking.pet_breed }}</td>
                             <td>{{ booking.adoption_date }}</td>
+                            <td>{{ booking.session_duration }}</td>
                             <td>{{ booking.service_type }}</td>
                             <td>{% if booking.service_type == 'Grooming' %}{{ booking.grooming_type }}{% else %}{{ booking.training_type }} {% endif %}</td>
                             <td>{{ booking.location }}</td>
+
+                            <!-- Booking Status Badge -->
                             <td><span class="badge bg-success">Completed</span></td>
                         </tr>
                       {% endfor %}
@@ -204,14 +212,25 @@
                         
                         <!-- Select Pet Name (Optional) -->
                         <div class="mb-3">
-                            <label for="petName" class="form-label">Select Pet</label>
+                            <label for="petName" class="form-label">Pet Name</label>
                             <select class="form-select" id="petName" name="pet_name" required>
-                                <option value="">-- Select a Pet --</option>
+                                <option >-- Select Pet Name --</option>
                                 {% for pet in pets %}
                                     <option value="{{ pet.id }}">{{ pet.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
+
+                        <div>
+                            <label for="petType" class="form-label">Pet Type</label>
+                            <select class="form-select" id="petType" name="pet_type" required>
+                                <option>-- Select Pet Type --</option>
+                                {% for pet in pets %}
+                                    <option value="{{ pet.pet_type }}">{{ pet.pet_type }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
                     
                         <!-- Pet Age -->
                         <div class="mb-3">
@@ -278,7 +297,7 @@
                     
                         <!-- Submit Button -->
                         <div class="text-end">
-                            <button type="submit" class="btn btn-primary">Book Service</button>
+                            <a href="{% url 'service_payment' %}"><button type="submit" class="btn btn-primary">Book Service</button></a>
                         </div>
                     </form>
                 </div>

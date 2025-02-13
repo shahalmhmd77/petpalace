@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Payment</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('https://source.unsplash.com/1600x900/?pets,animals') no-repeat center center/cover;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .payment-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Service Summary */
+        .cart-summary {
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-summary h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #007bff;
+        }
+
+        .cart-items {
+            list-style: none;
+            padding: 0;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .total-price {
+            text-align: right;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #28a745;
+        }
+
+        /* Payment Form */
+        .payment-form {
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .payment-form h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #007bff;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 1rem;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .btn-pay {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-pay:hover {
+            background-color: #0056b3;
+        }
+
+        /* Payment Method Sections */
+        .payment-method {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .payment-method h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #444;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 15px;
+            }
+
+            .cart-summary, .payment-form {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="page-title">Service Payment</h1>
+        <div class="payment-container">
+            <!-- Service Summary -->
+            <div class="cart-summary">
+                <h2>Service Summary</h2>
+                <ul class="cart-items">
+                    {% for service in services %}
+                    <li class="cart-item">
+                        <span class="item-name">{{ service.name }}</span>
+                        <span class="item-price">${{ service.price }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div class="total-price">
+                    <h3>Total: ${{ total_price }}</h3>
+                </div>
+            </div>
+
+            <!-- Payment Form -->
+            <div class="payment-form">
+                <h2>Payment Details</h2>
+                <form method="post" action="{% url 'proceed_service_payment' %}">
+                    {% csrf_token %}
+                    
+                    <!-- Payment Method Selection -->
+                    <div class="form-group">
+                        <label for="payment-method">Select Payment Method</label>
+                        <select id="payment-method" name="payment_method" onchange="togglePaymentFields()" required>
+                            <option value="">-- Select --</option>
+                            <option value="card">Credit/Debit Card</option>
+                            <option value="upi">UPI</option>
+                        </select>
+                    </div>
+
+                    <!-- Card Payment Section -->
+                    <div id="card-payment" class="payment-method">
+                        <h3>Credit/Debit Card</h3>
+                        <div class="form-group">
+                            <label for="card-number">Card Number</label>
+                            <input type="text" id="card-number" name="card_number" placeholder="1234 5678 9012 3456" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="expiry-date">Expiry Date</label>
+                            <input type="text" id="expiry-date" name="expiry_date" placeholder="MM/YY" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cvv">CVV</label>
+                            <input type="text" id="cvv" name="cvv" placeholder="123" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cardholder-name">Cardholder Name</label>
+                            <input type="text" id="cardholder-name" name="cardholder_name" placeholder="John Doe" required>
+                        </div>
+                    </div>
+
+                    <!-- UPI Payment Section -->
+                    <div id="upi-payment" class="payment-method">
+                        <h3>UPI</h3>
+                        <div class="form-group">
+                            <label for="upi-id">UPI ID</label>
+                            <input type="text" id="upi-id" name="upi_id" placeholder="yourname@upi" required>
+                        </div>
+                    </div>
+
+                    <!-- Pay Now Button -->
+                    <button type="submit" class="btn-pay">Pay Now</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePaymentFields() {
+            const paymentMethod = document.getElementById('payment-method').value;
+            const cardPayment = document.getElementById('card-payment');
+            const upiPayment = document.getElementById('upi-payment');
+
+            if (paymentMethod === 'card') {
+                cardPayment.style.display = 'block';
+                upiPayment.style.display = 'none';
+            } else if (paymentMethod === 'upi') {
+                cardPayment.style.display = 'none';
+                upiPayment.style.display = 'block';
+            } else {
+                cardPayment.style.display = 'none';
+                upiPayment.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
